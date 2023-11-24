@@ -19,6 +19,8 @@ Route::get('/phpinfo', function () {
 });
 
 Route::get('/', [App\Http\Controllers\StartController::class, 'mainpage']);
+
+
 Route::get('page/{id}', [App\Http\Controllers\ContMisController::class, 'makedata']);
 Route::get('/kadr', [App\Http\Controllers\OkController::class, 'showOkFiles']);
 Route::get('/sec', [App\Http\Controllers\SecController::class, 'showSecFiles']);

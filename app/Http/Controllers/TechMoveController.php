@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\TechMove;
@@ -13,15 +14,14 @@ class TechMoveController extends Controller
 
     public function techtable(Request $req)
     {
-      $type = $req->get('type');
-      $inn = $req->get('inv');
-      $target = $req->get('target');
+        $type = $req->get('type');
+        $inn = $req->get('inv');
+        $target = $req->get('target');
 
-     // TechMove::query()->insert(['type'=>$type,'invnum'=>$inn,'target'=>$target]);
         $model = new TechMove();
-        $model->type=$type;
-        $model->invnum=$inn;
-        $model->target=$target;
+        $model->type = $type;
+        $model->invnum = $inn;
+        $model->target = $target;
         $model->save();
 
     }
@@ -31,24 +31,24 @@ class TechMoveController extends Controller
         $type = $req->get('type');
         $inn = $req->get('inv');
 
-        if(!$inn && $type=='all'){
-           $result = TechMove::all();
-            return view('tabmove', ['table'=>$result]);
+        if (!$inn && $type == 'all') {
+            $result = TechMove::all();
+            return view('tabmove', ['table' => $result]);
         }
 
-        if($inn && $type=='all'){
+        if ($inn && $type == 'all') {
             $result = TechMove::where('invnum', $inn)->get();
-            return view('tabmove', ['table'=>$result]);
+            return view('tabmove', ['table' => $result]);
         }
 
-        if($inn && $type){
-            $result = TechMove::where(['invnum'=>$inn, 'type'=>$type])->get();
-            return view('tabmove', ['table'=>$result]);
+        if ($inn && $type) {
+            $result = TechMove::where(['invnum' => $inn, 'type' => $type])->get();
+            return view('tabmove', ['table' => $result]);
         }
 
-        if(!$inn && $type){
+        if (!$inn && $type) {
             $result = TechMove::where('type', $type)->get();
-            return view('tabmove', ['table'=>$result]);
+            return view('tabmove', ['table' => $result]);
         }
 
 

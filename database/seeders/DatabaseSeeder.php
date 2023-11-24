@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -15,9 +16,10 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
         DB::table('users')->insert([
-            'name' => 'itgroup',
-            'email' => 'report@ftpsrv.ru',
-            'password' => bcrypt('+Yxrk1'),
+            'name' => 'admin',
+            'email' => 'admin@admin.ru',
+            'password' => bcrypt('admin'),
+            'role' => 2,
         ]);
     }
 }

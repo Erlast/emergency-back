@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MisDoc;
 use Illuminate\Http\Request;
+
 class DelrowController extends Controller
 {
     public function deldata(Request $req){
