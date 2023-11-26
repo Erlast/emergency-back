@@ -12,10 +12,9 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Models\Cartrige;
-use App\Models\Printmodel;
-use App\Models\Cartstorage;
-use App\Models\Otdel;
+use App\Models\Cartridge;
+use App\Models\PrinterModel;
+use App\Models\Department;
 use Throwable;
 
 class CartStorageController extends Controller
@@ -43,14 +42,14 @@ class CartStorageController extends Controller
             case 'fill':
                 return view('cartridges.fill-form');
             case 'work':
-                $departments = Otdel::orderBy('otd_name')->get();
+                $departments = Department::orderBy('otd_name')->get();
 
                 return view('cartridges.form-work', compact('departments'));
             case 'kill':
                 return view('cartridges.kill-form');
             default:
-                $cartridgeBrands = Cartrige::orderBy('name')->get();
-                $printerModels = Printmodel::orderBy('name')->get();
+                $cartridgeBrands = Cartridge::orderBy('name')->get();
+                $printerModels = PrinterModel::orderBy('name')->get();
 
                 return view('cartridges.form', compact('cartridgeBrands', 'printerModels'));
         }
@@ -63,7 +62,7 @@ class CartStorageController extends Controller
      */
     public function act()
     {
-        $cartridges = Cartstorage::where('act', 1)->get();
+        $cartridges = Cartridge::where('act', 1)->get();
 
         return view('cartridges.act', compact('cartridges'));
 
@@ -74,11 +73,11 @@ class CartStorageController extends Controller
      */
     public function clearAct()
     {
-        $cartridges = Cartstorage::where('act', 1)->get();
+        $cartridges = Cartridge::where('act', 1)->get();
 
         foreach ($cartridges as $cartridge) {
             $cartridge->act = 0;
-            $cartridge->disloc = Cartstorage::DISLOCATION_STORAGE;
+            $cartridge->disloc = Cartridge::STATUS_DEPARTMENT;
             $cartridge->save();
         }
     }
@@ -88,7 +87,7 @@ class CartStorageController extends Controller
      */
     public function onStorage()
     {
-        $cartridges = Cartstorage::where('disloc', 'Склад')->get();
+        $cartridges = Cartridge::where('disloc', 'Склад')->get();
 
         return view('cartridges.act', compact('cartridges'));
     }
@@ -188,7 +187,7 @@ class CartStorageController extends Controller
         if (!$action)
             throw new Exception('no-action');
 
-        $cartridge = Cartstorage::where('sh_code', $shCode)->first();
+        $cartridge = Cartridge::where('sh_code', $shCode)->first();
 
         $statusFrom = null;
 
@@ -198,12 +197,12 @@ class CartStorageController extends Controller
                 if ($cartridge)
                     throw new Exception('error-cartridge-exists');
 
-                $cartridge = new Cartstorage();
+                $cartridge = new Cartridge();
                 $cartridge->id_name = $request->get('id_name');
                 $cartridge->id_mod = $request->get('id_print');
                 $cartridge->sh_code = $shCode;
-                $cartridge->status = Cartstorage::STATUS_STORAGE;
-                $cartridge->disloc = Cartstorage::DISLOCATION_STORAGE;
+                $cartridge->status = Cartridge::STATUS_STORAGE;
+                $cartridge->disloc = Cartridge::STATUS_DEPARTMENT;
                 $cartridge->cin = 0;
 
                 $cartridge->save();
@@ -217,10 +216,10 @@ class CartStorageController extends Controller
 
                 $statusFrom = $cartridge->disloc;
 
-                if ($cartridge->disloc == Cartstorage::DISLOCATION_STORAGE)
+                if ($cartridge->disloc == Cartridge::STATUS_STORAGE)
                     throw new Exception('error-dislocate-to-storage');
 
-                $cartridge->disloc = Cartstorage::DISLOCATION_STORAGE;
+                $cartridge->disloc = Cartridge::STATUS_STORAGE;
                 $cartridge->save();
 
                 break;
@@ -231,10 +230,10 @@ class CartStorageController extends Controller
 
                 $statusFrom = $cartridge->disloc;
 
-                if ($cartridge->disloc == Cartstorage::DISLOCATION_FILL)
+                if ($cartridge->disloc == Cartridge::STATUS_FILL)
                     throw new Exception('error-dislocate-to-fill');
 
-                $cartridge->disloc = Cartstorage::DISLOCATION_FILL;
+                $cartridge->disloc = Cartridge::STATUS_FILL;
                 $cartridge->cin += 1;
                 $cartridge->act = 1;
                 $cartridge->save();
@@ -257,8 +256,8 @@ class CartStorageController extends Controller
 
                 $statusFrom = $cartridge->disloc;
 
-                $cartridge->status = Cartstorage::STATUS_KILLED;
-                $cartridge->disloc = Cartstorage::DISLOCATION_RIP;
+                $cartridge->status = Cartridge::STATUS_KILLED;
+                $cartridge->disloc = Cartridge::STATUS_KILLED;
                 $cartridge->save();
                 break;
 

@@ -20,6 +20,8 @@ class CreatedCartridgeHistoryTable extends Migration
                 $table->string('status_from')->nullable();
                 $table->string('status_to');
                 $table->timestamps();
+
+                $table->foreign('cartridge_id')->references('id')->on('cartridges')->onDelete('cascade');
             });
         }
     }

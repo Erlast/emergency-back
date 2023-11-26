@@ -25,4 +25,12 @@ Route::prefix('admin')->group(function () {
     Route::get('/news/one/{id}', [\App\Http\Controllers\API\Admin\NewsController::class, 'one']);
     Route::post('/news/save', [\App\Http\Controllers\API\Admin\NewsController::class, 'save']);
     Route::delete('/news/{id}', [\App\Http\Controllers\API\Admin\NewsController::class, 'delete']);
+
+    Route::get('/dictionary/{dictionary}', [\App\Http\Controllers\API\Admin\DictionariesController::class, 'index']);
+    Route::post('/dictionary/{dictionary}', [\App\Http\Controllers\API\Admin\DictionariesController::class, 'save']);
+
+    Route::get('/cartridges', [\App\Http\Controllers\API\Admin\CartridgesController::class, 'index']);
+    Route::get('/cartridge/{id}', [\App\Http\Controllers\API\Admin\CartridgesController::class, 'one']);
+    Route::post('/cartridge', [\App\Http\Controllers\API\Admin\CartridgesController::class, 'save']);
+
 });

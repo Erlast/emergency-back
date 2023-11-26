@@ -9,18 +9,18 @@ use Illuminate\Database\Eloquent\Model;
 class ListTech extends Model
 {
      public function searchDetalisation(){
-#	    
-	    return $this->hasOne(Cartrige::class,'id','cartrige_id');
+#
+	    return $this->hasOne(Cartridge::class,'id','cartrige_id');
     }
 
     public function printName(){
-	
-	return $this->hasOne(Printmodel::class,'id','printmodel_id');
+
+	return $this->hasOne(PrinterModel::class,'id','printmodel_id');
     }
 
     public function otdName(){
 
-	return $this->hasOne(Otdel::class, 'id', 'otdel_id');
+	return $this->hasOne(Department::class, 'id', 'otdel_id');
 
     }
 

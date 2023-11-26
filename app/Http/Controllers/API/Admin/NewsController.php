@@ -24,15 +24,22 @@ class NewsController extends BaseController
         });
     }
 
-    public function one($id)
+    /**
+     * @param $id
+     * @return JsonResponse
+     */
+    public function one($id): JsonResponse
     {
         return $this->apiResponse(function () use ($id) {
-            $news = News::find($id);
-            return $news;
+            return News::find($id);
         });
     }
 
-    public function save(Request $request)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function save(Request $request): JsonResponse
     {
         return $this->apiResponse(function () use ($request) {
             $id = $request->get('id');
@@ -53,7 +60,11 @@ class NewsController extends BaseController
 
     }
 
-    public function delete($id)
+    /**
+     * @param $id
+     * @return JsonResponse
+     */
+    public function delete($id): JsonResponse
     {
         return $this->apiResponse(function () use ($id) {
             News::find($id)->delete();

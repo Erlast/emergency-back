@@ -3,19 +3,19 @@
 namespace App\Events;
 
 
-use App\Models\Cartstorage;
-
 class SaveCartridgeHistory
 {
 
     private $cartridgeId;
     private $statusFrom;
     private $statusTo;
+    private $department_id;
 
     public function __construct($cartridge, $statusFrom)
     {
         $this->cartridgeId = $cartridge->id;
-        $this->statusTo = $cartridge->disloc;
+        $this->statusTo = $cartridge->status;
+        $this->department_id = $cartridge->department_id;
         $this->statusFrom = $statusFrom;
     }
 
@@ -32,5 +32,10 @@ class SaveCartridgeHistory
     public function getStatusTo()
     {
         return $this->statusTo;
+    }
+
+    public function getDepartmentId()
+    {
+        return $this->department_id;
     }
 }

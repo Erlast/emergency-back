@@ -12,6 +12,7 @@ class HistorySubscriber
     {
         CartridgeHistory::create([
             'cartridge_id' => $cartridgeHistory->getCartridgeId(),
+            'department_id' => $cartridgeHistory->getDepartmentId(),
             'status_from' => $cartridgeHistory->getStatusFrom(),
             'status_to' => $cartridgeHistory->getStatusTo()
         ]);

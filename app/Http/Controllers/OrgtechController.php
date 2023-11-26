@@ -3,9 +3,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Otdel;
-use App\Models\Cartrige;
-use App\Models\Printmodel;
+use App\Models\Department;
+use App\Models\Cartridge;
+use App\Models\PrinterModel;
 use App\Models\ListTech;
 
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ class OrgtechController extends Controller
 {
     public function orgpanel()
     {
-        $res = Otdel::orderBy("otd_name")->get();
+        $res = Department::orderBy("otd_name")->get();
         return view('orgtech', ['data' => $res, 'idotd' => "techotd"]);
     }
 
@@ -24,16 +24,16 @@ class OrgtechController extends Controller
         if ($id) {
 
         } else {
-            $listOtdels = Otdel::orderBy("otd_name")->get();
-            $listModels = Printmodel::orderBy("name")->get();
-            $listCart = Cartrige::orderBy("name")->get();
+            $listOtdels = Department::orderBy("otd_name")->get();
+            $listModels = PrinterModel::orderBy("name")->get();
+            $listCart = Cartridge::orderBy("name")->get();
             return view('edittech', ['listOtdels' => $listOtdels, 'listModels' => $listModels, 'listCart' => $listCart, 'id' => '0', 'idotd' => "selectotdel"]);
         }
     }
 
     public function cart_list()
     {
-        $cartList = Cartrige::orderBy("name")->get();
+        $cartList = Cartridge::orderBy("name")->get();
 
         return view('listcart', ['listCart' => $cartList, 'type' => 'cart']);
     }
@@ -43,9 +43,9 @@ class OrgtechController extends Controller
         $name = $cartdata->name;
         $add_type = $cartdata->addtype;
         if ($add_type == 'cart') {
-            $cartModel = new Cartrige();
+            $cartModel = new Cartridge();
         } else {
-            $cartModel = new Printmodel();
+            $cartModel = new PrinterModel();
         }
         $cartModel->name = $name;
         $cartModel->save();
@@ -53,7 +53,7 @@ class OrgtechController extends Controller
 
     public function model_list()
     {
-        $printModels = Printmodel::orderBy("name")->get();
+        $printModels = PrinterModel::orderBy("name")->get();
         return view('listcart', ['listCart' => $printModels, 'type' => 'print']);
     }
 
@@ -94,10 +94,10 @@ class OrgtechController extends Controller
     {
         $id = $req->id;
         if ($id) {
-            $listOrg = Otdel::with(['searchOrg.printName'])->find($id)->searchOrg;
+            $listOrg = Department::with(['searchOrg.printName'])->find($id)->searchOrg;
             return view('techtable', ['tab' => $listOrg]);
         } else {
-            $listOrg = Otdel::with(['searchOrg.printName'])->get();
+            $listOrg = Department::with(['searchOrg.printName'])->get();
             return view('alltechtable', ['tab' => $listOrg, 'idotd' => 'techotd']);
 
         }
@@ -123,7 +123,7 @@ class OrgtechController extends Controller
     public function editDisloc(Request $req)
     {
         $id = $req->get('id');
-        $listOtdels = Otdel::orderBy("otd_name")->get();
+        $listOtdels = Department::orderBy("otd_name")->get();
         $detail = ListTech::find($id);
         return view('orgdislocation', ['listOtdels' => $listOtdels, 'detail' => $detail]);
     }

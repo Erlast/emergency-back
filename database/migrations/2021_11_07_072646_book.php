@@ -13,7 +13,7 @@ class Book extends Migration
      */
     public function up()
     {
-        if(!(Schema::hasTable('tech_moves'))){
+        if(!Schema::hasTable('tech_moves')){
             Schema::create('tech_moves', function (Blueprint $table){
                 $table->increments('id');
                 $table->string('type',20);

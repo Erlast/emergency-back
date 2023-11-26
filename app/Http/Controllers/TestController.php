@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Otdel;
+use App\Models\Department;
 use App\Models\Phone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -12,14 +12,14 @@ class TestController extends Controller
 
     public function test()
     {
-        $res = Otdel::orderBy("otd_name")->get();
+        $res = Department::orderBy("otd_name")->get();
         return view('testviews', ['data' => $res]);
     }
 
     public function add_otd(Request $res)
     {
         $newotd = $res->otd_name;
-        $model = new Otdel;
+        $model = new Department;
         $model->otd_name = $newotd;
         $model->save();
     }
