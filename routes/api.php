@@ -14,13 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/auth/login', [\App\Http\Controllers\API\Admin\AuthController::class, 'login']);
+Route::post('/auth/refresh', [\App\Http\Controllers\API\Admin\AuthController::class, 'refresh']);
 
 Route::get('/news', [\App\Http\Controllers\API\IndexController::class, 'index']);
 
-Route::prefix('admin')->group(function () {
+Route::group(['prefix' => 'admin', 'middleware' => 'jwt'], function () {
+    Route::get('/user',[\App\Http\Controllers\API\Admin\UserController::class,'one']);
+
     Route::get('/news', [\App\Http\Controllers\API\Admin\NewsController::class, 'index']);
     Route::get('/news/one/{id}', [\App\Http\Controllers\API\Admin\NewsController::class, 'one']);
     Route::post('/news/save', [\App\Http\Controllers\API\Admin\NewsController::class, 'save']);

@@ -31,7 +31,7 @@ Route::post('/listph', [App\Http\Controllers\TestController::class, 'find_phones
 Route::get('/test', [App\Http\Controllers\TestController::class, 'test']);
 Route::get('/phone', [App\Http\Controllers\PhoneController::class, 'phone']);
 
-Auth::routes();
+//Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
