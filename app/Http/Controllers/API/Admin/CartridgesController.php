@@ -6,14 +6,13 @@ use App\Events\SaveCartridgeHistory;
 use App\Exceptions\ValidationFailsException;
 use App\Http\Controllers\API\BaseController;
 use App\Models\Cartridge;
-
 use App\Validators\CartridgeValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CartridgesController extends BaseController
 {
-    private $validatorClass;
+    private CartridgeValidator $validatorClass;
 
     public function __construct(CartridgeValidator $validator)
     {
@@ -21,15 +20,29 @@ class CartridgesController extends BaseController
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return $this->apiResponse(function () {
+        return $this->apiResponse(function () use ($request) {
+
+            $paginator = $this->preparePaginate($request);
+
             $query = Cartridge::query();
-            $cartridges = $query->with(['brand', 'printerModel', 'department'])->orderBy('created_at', 'desc')->limit(5)->get();
-            $total = $query->count();
-            return compact('cartridges', 'total');
+            $cartridges = $query
+                ->with(['brand', 'printerModel', 'department'])
+                ->orderBy($paginator['sort'], $paginator['direction']);
+
+            $total = $cartridges->count();
+
+            if ($paginator['page'] !== null && $paginator['perPage'])
+                $cartridges = $cartridges->skip(($paginator['page'] - 1) * $paginator['perPage'])->take($paginator['perPage']);
+
+            $cartridges = $cartridges->get();
+            $page = $paginator['page'];
+
+            return compact('cartridges', 'total', 'page');
 
         });
     }
@@ -87,6 +100,21 @@ class CartridgesController extends BaseController
             return $cartridge;
 
         });
+    }
+
+    public function preparePaginate($request): array
+    {
+        $perPage = $request->get('perPage', 10);
+        $page = $request->get('page', 1);
+        $sort = $request->get('sort', 'id');
+        $direction = 'ASC';
+
+        if (str_starts_with($sort, '-')) {
+            $sort = substr($sort, 1);
+            $direction = 'DESC';
+        }
+
+        return compact('page', 'perPage', 'sort', 'direction');
     }
 
 }

@@ -16,11 +16,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/login', [\App\Http\Controllers\API\Admin\AuthController::class, 'login']);
 Route::post('/auth/refresh', [\App\Http\Controllers\API\Admin\AuthController::class, 'refresh']);
+Route::get('/user', [\App\Http\Controllers\API\Admin\UserController::class, 'oneCurrent'])->middleware('jwt');
 
 Route::get('/news', [\App\Http\Controllers\API\IndexController::class, 'index']);
 
 Route::group(['prefix' => 'admin', 'middleware' => 'jwt'], function () {
-    Route::get('/user',[\App\Http\Controllers\API\Admin\UserController::class,'one']);
+    Route::get('/users', [\App\Http\Controllers\API\Admin\UserController::class, 'index']);
+    Route::get('/user/{id}', [\App\Http\Controllers\API\Admin\UserController::class, 'one']);
+    Route::post('/user', [\App\Http\Controllers\API\Admin\UserController::class, 'save']);
+    Route::delete('/user/{id}', [\App\Http\Controllers\API\Admin\UserController::class, 'delete']);
 
     Route::get('/news', [\App\Http\Controllers\API\Admin\NewsController::class, 'index']);
     Route::get('/news/one/{id}', [\App\Http\Controllers\API\Admin\NewsController::class, 'one']);
