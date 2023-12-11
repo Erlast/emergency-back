@@ -16,8 +16,10 @@ return new class extends Migration
                 $table->id();
                 $table->unsignedBigInteger('section_id');
                 $table->string('name');
-                $table->string('url');
+                $table->string('url')->nullable();
                 $table->timestamps();
+
+                $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
             });
         }
 

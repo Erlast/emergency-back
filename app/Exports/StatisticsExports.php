@@ -15,8 +15,8 @@ class StatisticsExports implements FromQuery, WithMapping, WithHeadings
 
     use Exportable;
 
-    private $startDate;
-    private $endDate;
+    private string $startDate;
+    private string $endDate;
 
     public function __construct($request)
     {

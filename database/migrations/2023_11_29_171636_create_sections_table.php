@@ -17,6 +17,8 @@ return new class extends Migration {
                 $table->string('slug')->unique();
                 $table->string('name');
                 $table->timestamps();
+
+                $table->foreign('p_id')->references('id')->on('sections')->onDelete('cascade');
             });
         }
 
