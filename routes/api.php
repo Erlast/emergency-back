@@ -49,6 +49,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'jwt'], function () {
     Route::delete('/document/{id}', [\App\Http\Controllers\API\Admin\DocumentsController::class, 'delete']);
 
     Route::get('/workplaces', [\App\Http\Controllers\API\Admin\WorkplacesController::class, 'index']);
+    Route::get('/workplace/{id}', [\App\Http\Controllers\API\Admin\WorkplacesController::class, 'get']);
     Route::post('/workplace', [\App\Http\Controllers\API\Admin\WorkplacesController::class, 'save']);
     Route::delete('/workplace/{id}', [\App\Http\Controllers\API\Admin\WorkplacesController::class, 'delete']);
 

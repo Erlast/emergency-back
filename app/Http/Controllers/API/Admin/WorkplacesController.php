@@ -12,11 +12,29 @@ class WorkplacesController extends BaseController
     /**
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return $this->apiResponse(function () {
-            $workplaces = Workplace::query()->with(['department', 'ip', 'person','operatingSystem'])->get();
+        return $this->apiResponse(function () use ($request) {
+            $workplaces = Workplace::query()->with(['department', 'ip', 'person', 'operatingSystem']);
+            if ($filters = $request->get('filters')) {
+                if (isset($filters['inventory_number'])) {
+                    $workplaces->where('inventory_number', 'like', '%' . $filters['inventory_number'] . '%');
+                }
+                if (isset($filters['department_id'])) {
+                    $workplaces->where(['department_id' => $filters['department_id']]);
+                }
+
+                if (isset($filters['ip'])) {
+                    $ip = $filters['ip'];
+
+                    $workplaces->whereHas('ip', function ($query) use ($ip) {
+                        $query->where('ip_address', 'like', '%' . $ip . '%');
+                    });
+                }
+            }
             $total = $workplaces->count();
+            $workplaces = $workplaces->get();
+
             return compact('workplaces', 'total');
         });
     }
@@ -34,6 +52,21 @@ class WorkplacesController extends BaseController
         });
     }
 
+    /**
+     * @param $id
+     * @return JsonResponse
+     */
+    public function get($id): JsonResponse
+    {
+        return $this->apiResponse(function () use ($id) {
+            return Workplace::with(['person', 'ip', 'department', 'operatingSystem'])->where(['id' => $id])->first();
+        });
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function save(Request $request): JsonResponse
     {
         return $this->apiResponse(function () use ($request) {
