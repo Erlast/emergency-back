@@ -38,7 +38,7 @@ class CartridgeHistory extends Model
 
     public function getOnFill($startDate, $endDate)
     {
-        $query = CartridgeHistory::where(['cartridge_id' => $this->cartridge_id, 'status_from' => Cartridge::DISLOCATION_FILL]);
+        $query = CartridgeHistory::where(['cartridge_id' => $this->cartridge_id, 'status_from' => Cartridge::STATUS_FILL]);
 
         if ($startDate && $endDate)
             $query = $query->where('created_at', '>=', Carbon::parse($startDate . ' 00:00:00'))->where('created_at', '<=', Carbon::parse($endDate . ' 23:59:59'));
@@ -50,7 +50,7 @@ class CartridgeHistory extends Model
     public function getFromFill($startDate, $endDate)
     {
 
-        $query = CartridgeHistory::where(['cartridge_id' => $this->cartridge_id, 'status_to' => Cartridge::DISLOCATION_FILL]);
+        $query = CartridgeHistory::where(['cartridge_id' => $this->cartridge_id, 'status_to' => Cartridge::STATUS_FILL]);
 
         if ($startDate && $endDate)
             $query = $query->where('created_at', '>=', Carbon::parse($startDate . ' 00:00:00'))->where('created_at', '<=', Carbon::parse($endDate . ' 23:59:59'));
@@ -62,9 +62,7 @@ class CartridgeHistory extends Model
     {
         $query = CartridgeHistory::where(['cartridge_id' => $this->cartridge_id])
             ->whereNotNull('status_from')
-            ->where('status_from', '<>', Cartridge::DISLOCATION_FILL)
-            ->where('status_from', '<>', Cartridge::DISLOCATION_STORAGE)
-            ->where('status_from', '<>', Cartridge::DISLOCATION_RIP);
+            ->where('status_from', Cartridge::STATUS_DEPARTMENT);
 
         if ($startDate && $endDate)
             $query = $query->where('created_at', '>=', Carbon::parse($startDate . ' 00:00:00'))->where('created_at', '<=', Carbon::parse($endDate . ' 23:59:59'));
@@ -75,9 +73,7 @@ class CartridgeHistory extends Model
     public function getFromDepartment($startDate, $endDate)
     {
         $query = CartridgeHistory::where(['cartridge_id' => $this->cartridge_id])
-            ->where('status_to', '<>', Cartridge::DISLOCATION_FILL)
-            ->where('status_to', '<>', Cartridge::DISLOCATION_STORAGE)
-            ->where('status_to', '<>', Cartridge::DISLOCATION_RIP);
+            ->where('status_to', Cartridge::STATUS_DEPARTMENT);
 
         if ($startDate && $endDate)
             $query = $query->where('created_at', '>=', Carbon::parse($startDate . ' 00:00:00'))->where('created_at', '<=', Carbon::parse($endDate . ' 23:59:59'));
@@ -113,7 +109,7 @@ class CartridgeHistory extends Model
     public function scopeWithOrderByOnFill(Builder $query, $orderDir)
     {
         $query
-            ->select(['cartridge_id', DB::raw("COUNT(if(status_from='на заправке',1,null)) AS cnt")])
+            ->select(['cartridge_id', DB::raw("COUNT(if(status_from=".Cartridge::STATUS_FILL.",1,null)) AS cnt")])
             ->addCartStorage()
             ->orderBy('cnt', $orderDir);
     }
@@ -121,7 +117,7 @@ class CartridgeHistory extends Model
     public function scopeWithOrderByFromFill(Builder $query, $orderDir)
     {
         $query
-            ->select(['cartridge_id', DB::raw("COUNT(if(status_to='на заправке',1,null)) AS cnt")])
+            ->select(['cartridge_id', DB::raw("COUNT(if(status_to=".Cartridge::STATUS_FILL.",1,null)) AS cnt")])
             ->addCartStorage()
             ->orderBy('cnt', $orderDir);
     }
@@ -129,7 +125,7 @@ class CartridgeHistory extends Model
     public function scopeWithOrderByToDepartment(Builder $query, $orderDir)
     {
         $query
-            ->select(['cartridge_id', DB::raw('COUNT(if(status_from<>"на заправке" and status_from<>"Склад" and status_from is not NULL and status_from<>"rip",1,null)) as cnt')])
+            ->select(['cartridge_id', DB::raw('COUNT(if(status_from='.Cartridge::STATUS_DEPARTMENT.',1,null)) as cnt')])
             ->addCartStorage()
             ->orderBy('cnt', $orderDir);
     }
@@ -137,7 +133,7 @@ class CartridgeHistory extends Model
     public function scopeWithOrderByFromDepartment(Builder $query, $orderDir)
     {
         $query
-            ->select(['cartridge_id', DB::raw('COUNT(if(status_to<>"на заправке" and status_to<>"Склад" and status_to<>"rip",1,null)) as cnt')])
+            ->select(['cartridge_id', DB::raw('COUNT(if(status_to='.Cartridge::STATUS_DEPARTMENT.',1,null)) as cnt')])
             ->addCartStorage()
             ->orderBy('cnt', $orderDir);
     }
